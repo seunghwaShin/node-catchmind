@@ -24,15 +24,13 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     console.log('user connected:::: ', socket.client.id);
 
-    // socket.on('disconnect', () => {
-    //     console.log('user disconnected:::: ', socket.client.id);
-    // });
+    const clientsCount = socket.client.server.engine.clientsCount;
 
     //메세지를 받으면
     socket.on('chat-msg', ({name, msg}) => {
         console.log('name', name);
         console.log('msg', msg);
-        io.emit('chat-msg', name, msg);
+        io.emit('chat-msg', name, msg, clientsCount);
     });
 })
 
