@@ -1,7 +1,7 @@
 import React from 'react';
 import socketio from 'socket.io-client';
-import { Input, List, Avatar, Form, Button, Tag} from 'antd';
-import 'antd/dist/antd.css';
+import { Input, List, Form, Button, Tag} from 'antd';
+//import 'antd/dist/antd.css';
 
 const socket = socketio.connect('http://localhost:8080');
 
@@ -11,6 +11,7 @@ const colorPool = ['','orange', 'green', 'cyan', 'blue'];
 class Chat extends React.Component {
 
     state = {
+        vars: { '@primary-color': '#9999ff' },
         name: '',
         msg: '',
         chatlog: []
@@ -63,7 +64,7 @@ class Chat extends React.Component {
                     )}
                     />
                 <Form id="chat" onSubmit={this.onSend}>
-                    <Input maxLength="10" style={{width: '160px', marginRight: '5px'}} id="name" name="name" type="text" placeholder="name" onChange={this.changeInput} value={this.state.name}/>
+                    <Input maxLength={10} style={{width: '160px', marginRight: '5px'}} id="name" name="name" type="text" placeholder="name" onChange={this.changeInput} value={this.state.name}/>
                     <Input style={{width: '400px', marginRight: '5px'}} id="msg" name="msg" type="text" placeholder="message.." onChange={this.changeInput} value={this.state.msg}/>
                     <Button type="primary" htmlType="submit">전송</Button>
                 </Form>
