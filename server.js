@@ -45,10 +45,10 @@ io.on('connection', (socket) => {
     });
 
     //메세지를 받으면
-    socket.on('chat-msg', ({name, msg}) => {
+    socket.on('chat-msg', ({name, msg, color}) => {
         console.log('name', name);
         console.log('msg', msg);
-        io.emit('chat-msg', name, msg, socket.client.server.engine.clientsCount);
+        io.emit('chat-msg', name, msg, color);
     });
 
 

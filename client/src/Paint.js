@@ -1,6 +1,4 @@
 import React from 'react';
-import socketio from 'socket.io-client';
-import { Input, List, Form, Button, Tag} from 'antd';
 
 class Paint extends React.Component {
 
