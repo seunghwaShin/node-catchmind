@@ -20,11 +20,25 @@ app.get('/', (req, res) => {
     res.redirect(302, '/client');
 });
 
+const line_history = [];
+
 // 클라이어트가 접속 했을 때
 io.on('connection', (socket) => {
     console.log('user connected:::: ', socket.client.id);
 
     const clientsCount = socket.client.server.engine.clientsCount;
+
+    // 새 클라이언트가 접속하면 이전의 히스토리를 보내준다
+    for(let i in line_history){
+        socket.emit('draw_line', {
+            line: line_history[i]
+        });
+    }
+
+    socket.on('draw_line', (data) => {
+        line_history.push(data.line); // receive
+        io.emit('draw_line', {line: data.line}); // send
+    });
 
     //메세지를 받으면
     socket.on('chat-msg', ({name, msg}) => {

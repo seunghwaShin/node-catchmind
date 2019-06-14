@@ -11,11 +11,49 @@ const colorPool = ['','orange', 'green', 'cyan', 'blue'];
 class Chat extends React.Component {
 
     state = {
-        vars: { '@primary-color': '#9999ff' },
         name: '',
         msg: '',
-        chatlog: []
+        chatlog: [],
+        mouse : {
+            click: false,
+            move: false,
+            pos: {x: 0, y: 0},
+            pos_prev: false
+        }
     }
+
+    onMouseDown = (e) => {
+        
+        this.setState({
+            mouse: {
+                ...this.state.mouse,
+                click: true
+            }
+        });
+    }
+
+    onMouseUp = (e) =>{
+        this.setState({
+            mouse: {
+                ...this.state.mouse,
+                click: false
+            }
+        });
+    }
+
+    onMouseMove = (e) => {
+        const canvas = document.getElementById('canvasDiv');
+
+        this.setState({
+            mouse: {
+                ...this.state.mouse,
+                pos: {x: e.pageX - canvas.offsetLeft, y: e.pageY - canvas.offsetTop},
+                move: true
+            }
+        });
+    }
+
+    
 
     onSend = (e) => {
         const { name, msg } = this.state;
@@ -32,6 +70,7 @@ class Chat extends React.Component {
         });
     };
 
+
     changeInput = (e) => {
         this.setState({
             [e.target.name] : e.target.value
@@ -46,13 +85,61 @@ class Chat extends React.Component {
                 chatlog
             });
         });
+
+        socket.on('draw_line', (data) => {
+            const line = data.line;
+            const canvas = document.getElementById('canvasDiv');
+            const context = canvas.getContext('2d');
+            context.beginPath();
+            context.strokeStyle = '#df4b26';
+            context.lineJoin = 'round';
+            context.lineWidth = 3;
+            context.moveTo(line[0].x, line[0].y);
+            context.lineTo(line[1].x , line[1].y);
+            context.stroke();
+        });
+
+        this.mainLoop();
     }
 
+    mainLoop = () => {
+        const { click, move, pos_prev, pos } = this.state.mouse;
+        if(click && move && pos_prev){
+            socket.emit('draw_line', {line: [pos, pos_prev]});
+            this.setState({
+                mouse: {
+                    ...this.state.mouse,
+                    move: false
+                }
+            });
+        }
+
+        this.setState({
+            mouse: {
+                ...this.state.mouse,
+                pos_prev: {
+                    x: pos.x,
+                    y: pos.y
+                }
+            }
+        });
+        setTimeout(this.mainLoop, 25);
+    }
 
     render(){
 
         return (
             <div style={{padding: '10px 0 0 10px'}}>
+                <canvas
+                    id="canvasDiv" 
+                    width="560px"
+                    height="300px"
+                    style={{border: '1px solid black'}} 
+                    onMouseDown={this.onMouseDown}
+                    onMouseLeave={this.onMouseLeave}
+                    onMouseUp={this.onMouseUp}
+                    onMouseMove={this.onMouseMove}
+                />
                 <List
                     split={false}
                     itemLayout="horizontal" 
