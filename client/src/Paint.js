@@ -56,8 +56,8 @@ class Paint extends React.Component {
 
     componentDidMount(){
         // 서버에서 draw_line 이벤트 받음
-        this.props.socket.on('draw_line', (data) => {
-            const line = data.line;
+        this.props.socket.on('draw_line', ({line}) => {
+            //const line = data.line;
             const canvas = document.getElementById('canvasDiv');
             const context = canvas.getContext('2d');
             context.beginPath();

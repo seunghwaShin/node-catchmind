@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, List, Form, Button, Tag} from 'antd';
+import { Input, List, Form, Button, Tag } from 'antd';
 
 class Chat extends React.Component {
 
@@ -32,7 +32,7 @@ class Chat extends React.Component {
     }
 
     componentDidMount(){        
-        this.props.socket.on('chat-msg', (name, msg, color) => {
+        this.props.socket.on('chat-msg', ({name, msg, color}) => {
             const chatlog = this.state.chatlog;
             chatlog.push({name, msg, color});
             this.setState({

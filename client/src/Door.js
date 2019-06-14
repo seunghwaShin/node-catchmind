@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Radio, Form, Button, Tag} from 'antd';
+import { Input, Radio, Form, Button } from 'antd';
 
 const colorPool = ['#ff4444', '#fa8072', '#ffa500', '#bada55','#008000', '#008080', '#0099cc','#3b5998',];
 
