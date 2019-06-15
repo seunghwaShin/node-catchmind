@@ -88,8 +88,6 @@ class Paint extends React.Component {
             context.clearRect(0, 0, canvas.width, canvas.height);
         });
 
-        //console.dir(this.props.socket);
-
         this.props.socket.emit('check_turn', this.props.socket.id);
 
         this.props.socket.on('my_turn', (turn) => {
