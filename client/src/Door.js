@@ -37,7 +37,7 @@ class Door extends React.Component {
                 <Radio.Group defaultValue="orange" onChange={this.changeRadio}>
                     {
                         colorPool.map(color => (
-                            <Radio.Button value={color} style={{backgroundColor: color}}></Radio.Button>
+                            <Radio.Button value={color} style={{backgroundColor: color}} key={color}></Radio.Button>
                         ))
                     }
                 </Radio.Group>

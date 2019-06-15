@@ -21,13 +21,21 @@ app.get('/', (req, res) => {
 });
 
 
+let connectionList = [];
 
 // 클라이어트가 접속 했을 때
 io.on('connection', (socket) => {
     // socket : 커넥션이 성공했을때 커넥션에 대한 정보를 담고 있는 변수
 
     console.log('user connected:::: ', socket.client.id);
+    connectionList.push(socket.client.id);
     console.log('clientsCount',socket.client.server.engine.clientsCount);
+
+    socket.on('check_turn', (id) => {
+        if(connectionList.indexOf(id) === 0){
+            socket.emit('my_turn', true);
+        }
+    })
 
     // 새 클라이언트가 접속하면 이전의 히스토리를 보내준다
     for(let i in line_history){
@@ -53,11 +61,17 @@ io.on('connection', (socket) => {
     //     console.log('sever redraw');
     //     line_history = [];
     //     io.emit('redraw');
-    // });
+    // });    
     socket.on('disconnect', () => {
-        console.log('user disconnected:::: ', socket.client.id);
-        console.log('clientsCount',socket.client.server.engine.clientsCount);
+        const idx = connectionList.indexOf(socket.client.id);
+        connectionList.splice(idx, 1);
+        //console.log('connectionList::',connectionList.toString());
+    });
+
+    socket.on('clear_canvas', () => {
+        io.emit('clear_canvas', true);
     })
+
 });
 
 

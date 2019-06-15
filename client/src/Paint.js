@@ -1,4 +1,6 @@
 import React from 'react';
+import { Input, Radio, Form, Button } from 'antd';
+
 
 class Paint extends React.Component {
 
@@ -6,23 +8,27 @@ class Paint extends React.Component {
         click: false,
         move: false,
         pos: {x: 0, y: 0},
-        pos_prev: false
+        pos_prev: false,
+        myturn: false
     }
+    
 
     onMouseDown = (e) => {
-        
+        if(!this.state.myturn) return;
         this.setState({
             click: true
         });
     }
 
     onMouseUp = (e) =>{
+        if(!this.state.myturn) return;
         this.setState({
             click: false
         });
     }
 
     onMouseMove = (e) => {
+        if(!this.state.myturn) return;
         const canvas = document.getElementById('canvasDiv');
 
         this.setState({
@@ -73,14 +79,41 @@ class Paint extends React.Component {
         //     this.setState({answer});
         // });
 
-        this.mainLoop(); 
+        this.mainLoop();
+        
+        
+        this.props.socket.on('clear_canvas', () => {
+            const canvas = document.getElementById('canvasDiv');
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        //console.dir(this.props.socket);
+
+        this.props.socket.emit('check_turn', this.props.socket.id);
+
+        this.props.socket.on('my_turn', (turn) => {
+            if(turn){
+                this.setState({myturn: turn});
+            }            
+        })
+    }
+
+
+    clearCanvas = () => {
+        this.props.socket.emit('clear_canvas', true);
     }
 
     render(){
+
         return(
-            <canvas
+            <>
+                <div>
+                    { this.state.myturn && <Button onClick={this.clearCanvas}>지우기</Button> }   
+                </div>                             
+                <canvas
                     id="canvasDiv" 
-                    width="560px"
+                    width="660px"
                     height="300px"
                     style={{border: '1px solid black'}} 
                     onMouseDown={this.onMouseDown}
@@ -88,6 +121,8 @@ class Paint extends React.Component {
                     onMouseUp={this.onMouseUp}
                     onMouseMove={this.onMouseMove}
                 />
+            </>
+            
         );
     }
 
